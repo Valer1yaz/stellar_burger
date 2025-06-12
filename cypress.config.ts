@@ -5,5 +5,8 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       // implement node event listeners here
     },
+    env: {
+      BURGER_API_URL: 'http://localhost:4000'
+    }
   },
 });

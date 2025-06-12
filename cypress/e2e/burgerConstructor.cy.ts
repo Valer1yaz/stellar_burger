@@ -1,17 +1,15 @@
 import * as authTokens from '../fixtures/token.json';
 import * as orderData from '../fixtures/order.json';
 
-const TEST_URL = 'http://localhost:4000';
-
 describe('Интеграционные тесты для страницы конструктора', () => {
   beforeEach(() => {
-    cy.intercept('GET', 'api/ingredients', { fixture: 'ingredients.json' });
-    cy.visit(TEST_URL);
+    cy.intercept('GET', `${Cypress.env('BURGER_API_URL')}/api/ingredients`, { fixture: 'ingredients.json' });
+    cy.visit(Cypress.env('BURGER_API_URL'));
   });
 
   describe('Тестирование загрузки ингредиентов и добавления их в конструктор', () => {
     it('Добавление булок и ингредиентов в заказ', () => {
-      cy.request('/api/ingredients');
+      cy.request(`${Cypress.env('BURGER_API_URL')}/api/ingredients`);
       cy.addIngredientsToConstructor();
       cy.checkConstructorContent();
     });
@@ -36,11 +34,11 @@ describe('Интеграционные тесты для страницы кон
 
   describe('Тестирование создания заказа', () => {
     beforeEach(() => {
-      cy.intercept('GET', 'api/auth/user', { fixture: 'user.json' });
+      cy.intercept('GET', `${Cypress.env('BURGER_API_URL')}/api/auth/user`, { fixture: 'user.json' });
       cy.setCookie('accessToken', authTokens.accessToken);
       localStorage.setItem('refreshToken', authTokens.refreshToken);
-      cy.intercept('GET', 'api/auth/tokens', { fixture: 'token.json' });
-      cy.intercept('POST', 'api/orders', { fixture: 'order.json' });
+      cy.intercept('GET', `${Cypress.env('BURGER_API_URL')}/api/auth/tokens`, { fixture: 'token.json' });
+      cy.intercept('POST', `${Cypress.env('BURGER_API_URL')}/api/orders`, { fixture: 'order.json' });
     });
 
     it('Полный прогон создания заказа', () => {
