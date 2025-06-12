@@ -1,19 +1,10 @@
-import userReducer, { UserState, clearErrors } from './slice';
+import userReducer, { UserState, clearErrors, initialState } from './slice';
 
 import { order, userOrders } from '../../../testData';
 import { getOrdersThunk } from './actions';
 
 describe('Тесты синхронных экшенов', () => {
   test('Проверяем очистку заказа', () => {
-    const initialState: UserState = {
-      isAuthenticated: false,
-      loginUserRequest: false,
-      user: null,
-      orders: [],
-      ordersRequest: false,
-      error: 'some error'
-    };
-
     const newOrder = userReducer(initialState, clearErrors());
     expect(newOrder.error).toBeNull();
   });
@@ -22,14 +13,6 @@ describe('Тесты синхронных экшенов', () => {
 describe('Тесты асинхронных экшенов', () => {
   describe('Тестируем getOrdersThunk', () => {
     test('Тестируем отправку запроса (pending)', async () => {
-      const initialState: UserState = {
-        isAuthenticated: false,
-        loginUserRequest: false,
-        user: null,
-        orders: [],
-        ordersRequest: false,
-        error: null
-      };
       const newState = userReducer(
         initialState,
         getOrdersThunk.pending('pending')
@@ -39,15 +22,6 @@ describe('Тесты асинхронных экшенов', () => {
       expect(newState.error).toBeNull();
     });
     test('Тестируем ошибку при запросе (rejected)', async () => {
-      const initialState: UserState = {
-        isAuthenticated: false,
-        loginUserRequest: false,
-        user: null,
-        orders: [],
-        ordersRequest: true,
-        error: null
-      };
-
       const error: Error = {
         name: 'rejected',
         message: 'Ошибка получения заказов пользователя'
@@ -61,15 +35,6 @@ describe('Тесты асинхронных экшенов', () => {
       expect(newState.error).toBe(error.message);
     });
     test('Тестируем успешный запрос (fulfilled)', async () => {
-      const initialState: UserState = {
-        isAuthenticated: false,
-        loginUserRequest: false,
-        user: null,
-        orders: [],
-        ordersRequest: true,
-        error: null
-      };
-    
       const newState = userReducer(
         initialState,
         getOrdersThunk.fulfilled(userOrders, 'fulfilled')
